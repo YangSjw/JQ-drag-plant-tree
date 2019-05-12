@@ -1,0 +1,150 @@
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+#div1 {width:100px; height:100px; background:red; position:absolute;}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<script>
+window.onload=function ()
+{
+	var oDiv=document.getElementById('div1');
+	
+	oDiv.onmousedown=function (ev)
+	{
+		var oEvent=ev||event;
+		var disX=oEvent.clientX-oDiv.offsetLeft;
+		var disY=oEvent.clientY-oDiv.offsetTop;
+		
+		document.onmousemove=function (ev)
+		{
+			var oEvent=ev||event;
+			var l=oEvent.clientX-disX;
+			var t=oEvent.clientY-disY;
+			
+			if(l<50)
+			{
+				l=0;
+			}
+			else if(l>document.documentElement.clientWidth-oDiv.offsetWidth-50)
+			{
+				l=document.documentElement.clientWidth-oDiv.offsetWidth;
+			}
+			
+			if(t<50)
+			{
+				t=0;
+			}
+			else if(t>document.documentElement.clientHeight-oDiv.offsetHeight-50)
+			{
+				t=document.documentElement.clientHeight-oDiv.offsetHeight;
+			}
+			
+			oDiv.style.left=l+'px';
+			oDiv.style.top=t+'px';
+		};
+		
+		document.onmouseup=function ()
+		{
+			document.onmousemove=null;
+			document.onmouseup=null;
+		};
+	};
+};
+</script>
+</head>
+
+<body>
+<div id="div1">
+</div>
+</body>
+</html> -->
+
+
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div style="height:100%;position:relative;margin:10px auto;width:507px">
+    <img src='../image/num.png' id="printimg" style='height:380px;position:absolute;top:0;right:0;'/>
+    <img src='../image/ground.png' id="drag"
+    style='height:25px;width:25px;position:absolute;top:0;right:0;z-index:10;cursor:hand'/>
+</div>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+$(function(){
+            /*--------------拖曳效果----------------
+            *原理：标记拖曳状态dragging ,坐标位置iX, iY
+            *         mousedown:fn(){dragging = true, 记录起始坐标位置，设置鼠标捕获}
+            *         mouseover:fn(){判断如果dragging = true, 则当前坐标位置 - 记录起始坐标位置，绝对定位的元素获得差值}
+            *         mouseup:fn(){dragging = false, 释放鼠标捕获，防止冒泡}
+            */
+            var dragging = false;
+            var iX, iY;
+            $("#drag").mousedown(function(e) {
+                dragging = true;
+                iX = e.clientX - this.offsetLeft;
+                iY = e.clientY - this.offsetTop;
+                this.setCapture && this.setCapture();
+                return false;
+            });
+            document.onmousemove = function(e) {
+                if (dragging) {
+                var e = e || window.event;
+                var oX = e.clientX - iX;
+                var oY = e.clientY - iY;
+                locationX=(507-oX)*3264/380;
+                locationY=oY*3264/380;
+                $("#drag").css({"left":oX + "px", "top":oY + "px"});
+                return false;
+                }
+            };
+            $(document).mouseup(function(e) {
+                dragging = false;
+                $("#drag")[0].releaseCapture();
+                e.cancelBubble = true;
+            })
+
+        })</script>
+
+</body>
+</html>
+
+
+<!-- $(function(){
+    var iX, iY;
+    $("#drag").mousedown(function(e) {
+        iX = e.clientX - this.offsetLeft;
+        iY = e.clientY - this.offsetTop;
+        this.setCapture && this.setCapture();
+        $(document).mouseup(function(e) {
+            var oX = e.clientX - iX;
+            var oY = e.clientY - iY;
+            if(oX<50) {
+                oX = 0;
+            } else if(oX > e.clientWidth-$("#drag").offsetWidth-50) {
+                oX = e.clientWidth-$("#drag").offsetWidth + "px";
+            }
+            if(oY<50) {
+                oY = 0;
+            } else if(oY > e.clientHeight-$("#drag").offsetHeight-50) {
+                oY = e.clientHeight-$("#drag").offsetHeight + "px";
+            }
+
+            // $("#drag").css({
+            //     "left":oX + "px", "top":oY + "px"
+            // });
+            // return false;
+        });
+    
+
+        $(document).mouseup(function(e) {
+            e.releaseCapture && el.releaseCapture(); 
+            e.cancelBubble = true;
+        })
+    });
+  
+
+}) -->
